@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Calci Request</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #1a1a2e;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      background: #16213e;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      width: 350px;
+    }
+    h2 { color: white; text-align: center; }
+    input {
+      width: 93%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: none;
+      background: #0f3460;
+      color: white;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .get { background: #4CAF50; color: white; }
+    .post { background: #e94560; color: white; }
+    #response {
+      background: #0f3460;
+      color: #ccc;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-size: 13px;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>API Request Tester</h2>
+
+    <input type="number" id="postId" placeholder="Enter Post ID (1-100)" />
+    <button class="get" onclick="getPost()">GET Post</button>
+
+    <input type="text" id="postTitle" placeholder="Enter Post Title" />
+    <input type="text" id="postBody" placeholder="Enter Post Body" />
+    <button class="post" onclick="createPost()">POST New Entry</button>
+
+    <div id="response">Response will appear here...</div>
+  </div>
+
+  <script>
+    async function getPost() {
+      const id = document.getElementById('postId').value || 1;
+      document.getElementById('response').textContent = 'Fetching...';
+      try {
+        const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
+        const data = await res.json();
+        document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById('response').textContent = 'Error: ' + err.message;
+      }
+    }
+
+    async function createPost() {
+      const title = document.getElementById('postTitle').value;
+      const body = document.getElementById('postBody').value;
+      document.getElementById('response').textContent = 'Posting...';
+      try {
+        const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title, body, userId: 1 })
+        });
+        const data = await res.json();
+        document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        document.getElementById('response').textContent = 'Error: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
